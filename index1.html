@@ -1,0 +1,2468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Time Value of Money (TVM) Financial Calculator Application - BS3210 Assignment 1, MIT Vishwaprayag University, Solapur.">
+  <title>TVM Financial Calculator | MIT Vishwaprayag University</title>
+  
+  <!-- Font Preconnect & Import with system fallbacks for fast offline loading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM & CSS VARIABLES
+       ========================================================================== */
+    :root {
+      /* Brand Color Palette */
+      --primary-dark: #0f172a;
+      --primary-navy: #1e293b;
+      --accent-blue: #2563eb;
+      --accent-blue-hover: #1d4ed8;
+      --accent-cyan: #0284c7;
+      --accent-indigo: #4f46e5;
+      --success-green: #059669;
+      --success-bg: #ecfdf5;
+      --warning-amber: #d97706;
+      --error-red: #dc2626;
+      --error-bg: #fef2f2;
+      
+      /* Neutral Tones */
+      --bg-main: #f8fafc;
+      --surface-card: #ffffff;
+      --surface-card-alt: #f1f5f9;
+      --border-light: #e2e8f0;
+      --border-focus: #93c5fd;
+      
+      /* Typography */
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-heading: 'Outfit', 'Inter', system-ui, sans-serif;
+      
+      /* Shadows & Effects */
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Reset & Base Styles */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    /* ==========================================================================
+       HEADER & BRANDING SECTION
+       ========================================================================== */
+    .app-header {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, #1e1b4b 50%, var(--primary-navy) 100%);
+      color: #ffffff;
+      padding: 2.25rem 0 1.75rem 0;
+      box-shadow: var(--shadow-lg);
+      border-bottom: 4px solid var(--accent-blue);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(37,99,235,0.2) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .header-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .university-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      width: fit-content;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: #93c5fd;
+    }
+
+    .university-badge svg {
+      width: 18px;
+      height: 18px;
+      fill: #93c5fd;
+    }
+
+    .header-titles {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .header-title-group h1 {
+      font-family: var(--font-heading);
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .header-title-group p.subtitle {
+      font-size: 1.05rem;
+      color: #cbd5e1;
+      margin-top: 0.35rem;
+      font-weight: 400;
+    }
+
+    .course-meta {
+      text-align: right;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--accent-cyan);
+    }
+
+    .course-meta .course-code {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #38bdf8;
+    }
+
+    .course-meta .dept-name {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+
+    /* ==========================================================================
+       TEAM DETAILS
+       ========================================================================== */
+    .team-details {
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      padding: 1.25rem 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .team-details-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .team-details-title {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary-navy);
+    }
+
+    .team-number {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-full);
+      background: #eff6ff;
+      color: var(--accent-blue);
+      border: 1px solid #bfdbfe;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .team-table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+    }
+
+    .team-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .team-table th {
+      background: var(--primary-navy);
+      color: #ffffff;
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .team-table td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-main);
+    }
+
+    .team-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .team-table tbody tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .team-table tbody tr:hover {
+      background: #eff6ff;
+    }
+
+    .team-table .member-name {
+      font-weight: 600;
+      color: var(--primary-navy);
+    }
+
+    .team-table .prn {
+      font-family: monospace;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    @media (max-width: 600px) {
+      .team-details {
+        padding: 1rem;
+        margin-top: 1rem;
+      }
+
+      .team-details-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .team-table {
+        min-width: 520px;
+      }
+    }
+
+    /* ==========================================================================
+       NAVIGATION TABS
+       ========================================================================== */
+    .nav-tabs-wrapper {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-light);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 0.4rem;
+      padding: 0.75rem 0;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 0.95rem;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--transition);
+    }
+
+    .tab-btn:hover {
+      color: var(--accent-blue);
+      background: #eff6ff;
+    }
+
+    .tab-btn.active {
+      color: #ffffff;
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .tab-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ==========================================================================
+       MAIN WORKSPACE & LAYOUT
+       ========================================================================== */
+    .main-workspace {
+      flex: 1;
+      padding: 2rem 0 3rem 0;
+    }
+
+    .calculator-panel {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out forwards;
+    }
+
+    .calculator-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .section-header h2 {
+      font-family: var(--font-heading);
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-header h2 svg {
+      color: var(--accent-blue);
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-top: 0.25rem;
+    }
+
+    /* Grid Layout: Inputs & Results */
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+
+    @media (min-width: 900px) {
+      .calc-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .calc-grid.full-width {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary-navy);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--bg-main);
+      padding-bottom: 0.75rem;
+    }
+
+    .card-title .badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      background: #dbeafe;
+      color: var(--accent-blue);
+      font-weight: 600;
+    }
+
+    /* Form Controls */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--primary-navy);
+      margin-bottom: 0.4rem;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-prefix, .input-suffix {
+      position: absolute;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .input-prefix { left: 1rem; }
+    .input-suffix { right: 1rem; }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-main);
+      background: #ffffff;
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-md);
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .has-prefix { padding-left: 2.25rem; }
+    .has-suffix { padding-right: 3.5rem; }
+
+    .form-control:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+    }
+
+    select.form-control {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2064748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1.1em;
+    }
+
+    .input-group-split {
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .input-group-split .form-control {
+      flex: 1;
+    }
+
+    select.form-control-unit {
+      width: 120px;
+      padding: 0.75rem 2rem 0.75rem 0.85rem;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--primary-navy);
+      background-color: #f8fafc;
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-md);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2064748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.65rem center;
+      background-size: 1em;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    select.form-control-unit:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+      background-color: #ffffff;
+    }
+
+    .field-hint {
+      font-size: 0.775rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+
+    /* Buttons */
+    .button-group {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--accent-blue);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+      flex: 2;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-blue-hover);
+      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--surface-card-alt);
+      color: var(--primary-navy);
+      border: 1px solid var(--border-light);
+      flex: 1;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+      color: var(--primary-dark);
+    }
+
+    .btn-chip {
+      font-size: 0.775rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      background: #eff6ff;
+      color: var(--accent-blue);
+      border: 1px solid #bfdbfe;
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .btn-chip:hover {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border-color: var(--accent-blue);
+    }
+
+    .preset-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+
+    .preset-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* Error Alert */
+    .alert-box {
+      display: none;
+      padding: 0.85rem 1rem;
+      background: var(--error-bg);
+      border: 1px solid #fecaca;
+      border-radius: var(--radius-md);
+      color: var(--error-red);
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .alert-box.visible {
+      display: flex;
+    }
+
+    .alert-box svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      fill: currentColor;
+    }
+
+    /* ==========================================================================
+       RESULTS SECTION & CARDS
+       ========================================================================== */
+    .results-card {
+      background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+      border: 1.5px solid var(--border-light);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .main-result-banner {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-navy) 100%);
+      color: #ffffff;
+      padding: 1.5rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+
+    .main-result-banner .result-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #93c5fd;
+      font-weight: 600;
+    }
+
+    .main-result-banner .result-value {
+      font-family: var(--font-heading);
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-top: 0.25rem;
+      word-break: break-all;
+    }
+
+    .result-metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .metric-pill {
+      background: var(--surface-card-alt);
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+    }
+
+    .metric-pill .metric-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .metric-pill .metric-value {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-top: 0.25rem;
+    }
+
+    /* Formula Explanation Box */
+    .formula-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      margin-top: 1.25rem;
+    }
+
+    .formula-card h4 {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #0369a1;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .formula-card p.formula-expression {
+      font-family: monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #0c4a6e;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+      margin: 0.35rem 0;
+    }
+
+    .formula-card ul {
+      font-size: 0.8rem;
+      color: #334155;
+      padding-left: 1.2rem;
+      margin-top: 0.35rem;
+    }
+
+    /* SVG Chart Containers */
+    .chart-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .donut-chart-svg {
+      width: 170px;
+      height: 170px;
+      transform: rotate(-90deg);
+    }
+
+    .chart-legend {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      width: 100%;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    /* ==========================================================================
+       TABLES & SCENARIO STYLES
+       ========================================================================== */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-sm);
+      margin-top: 1rem;
+      max-height: 520px;
+      overflow-y: auto;
+    }
+
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    .custom-table th {
+      background: var(--primary-navy);
+      color: #ffffff;
+      font-weight: 600;
+      padding: 0.85rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      white-space: nowrap;
+    }
+
+    .custom-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    .custom-table tbody tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .custom-table tbody tr:hover {
+      background: #eff6ff;
+    }
+
+    .custom-table td.font-mono {
+      font-family: monospace;
+      font-weight: 600;
+    }
+
+    /* Scenario Comparative SVG Bar Chart */
+    .scenario-chart-box {
+      margin-top: 1.5rem;
+      background: #ffffff;
+      padding: 1.25rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+    }
+
+    .bar-chart-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .scenario-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .scenario-label {
+      width: 60px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--primary-navy);
+    }
+
+    .scenario-track {
+      flex: 1;
+      height: 28px;
+      background: #f1f5f9;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      display: flex;
+      position: relative;
+    }
+
+    .bar-fill-principal {
+      height: 100%;
+      background: var(--accent-blue);
+      transition: width 0.5s ease-out;
+    }
+
+    .bar-fill-interest {
+      height: 100%;
+      background: #f59e0b;
+      transition: width 0.5s ease-out;
+    }
+
+    .scenario-value-text {
+      width: 140px;
+      text-align: right;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    /* Export Controls */
+    .table-header-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    /* ==========================================================================
+       FOOTER
+       ========================================================================== */
+    .app-footer {
+      background: var(--primary-dark);
+      color: #94a3b8;
+      padding: 2rem 0;
+      margin-top: auto;
+      border-top: 1px solid var(--primary-navy);
+      font-size: 0.875rem;
+      text-align: center;
+    }
+
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .footer-content strong {
+      color: #f8fafc;
+    }
+
+    .footer-badge {
+      display: inline-block;
+      margin-top: 0.5rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #38bdf8;
+      font-size: 0.775rem;
+    }
+
+    /* Responsive Queries */
+    @media (max-width: 768px) {
+      .header-titles {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .course-meta {
+        text-align: left;
+        width: 100%;
+      }
+      .result-metrics-grid {
+        grid-template-columns: 1fr;
+      }
+      .main-result-banner .result-value {
+        font-size: 1.75rem;
+      }
+      .scenario-bar-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+      }
+      .scenario-track {
+        width: 100%;
+      }
+      .scenario-value-text {
+        width: 100%;
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       HEADER & BRANDING
+       ========================================================================== -->
+  <header class="app-header">
+    <div class="container header-content">
+      
+      <div class="university-badge">
+        <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM3.82 9L12 4.54 20.18 9 12 13.46 3.82 9zM5 13.25V17c0 2.21 3.13 4 7 4s7-1.79 7-4v-3.75l-7 3.82-7-3.82z"/></svg>
+        MIT Vishwaprayag University, Solapur
+      </div>
+
+      <div class="header-titles">
+        <div class="header-title-group">
+          <h1>Financial Calculator</h1>
+          <p class="subtitle">Time Value of Money (TVM) – Assignment 1</p>
+        </div>
+
+        <div class="course-meta">
+          <div class="course-code">BS3210: Finance for Engineers, Designers and Professionals</div>
+          <div class="dept-name">School of Business</div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       TEAM DETAILS
+       ========================================================================== -->
+  <section class="team-details container" aria-label="Team Details">
+    <div class="team-details-header">
+      <div class="team-details-title">Team Details</div>
+      <div class="team-number">Team No.: 17</div>
+    </div>
+
+    <div class="team-table-wrapper">
+      <table class="team-table">
+        <thead>
+          <tr>
+            <th>Sr. No.</th>
+            <th>Team Member Name</th>
+            <th>PRN No.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td class="member-name">Rushi Chimman</td>
+            <td class="prn">SCLU325044</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td class="member-name">Abhishek Raut</td>
+            <td class="prn">SCLU325047</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td class="member-name">Jaydatta Chandankar</td>
+            <td class="prn">SCLU325054</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td class="member-name">Sanskar Dongare</td>
+            <td class="prn">SCLU325067</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       NAVIGATION TABS SYSTEM
+       ========================================================================== -->
+  <nav class="nav-tabs-wrapper">
+    <div class="container">
+      <div class="nav-tabs" role="tablist" id="tvmTabList">
+        <button class="tab-btn active" data-tab="fv" role="tab" aria-selected="true">
+          <svg viewBox="0 0 24 24"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          Future Value (FV)
+        </button>
+        <button class="tab-btn" data-tab="pv" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24"><path d="M11 17H3m0 0v-8m0 8l8-8 4 4 6-6"/></svg>
+          Present Value (PV)
+        </button>
+        <button class="tab-btn" data-tab="si" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Simple Interest
+        </button>
+        <button class="tab-btn" data-tab="ci" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          Compound Interest
+        </button>
+        <button class="tab-btn" data-tab="emi" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          EMI Calculator
+        </button>
+        <button class="tab-btn" data-tab="amortization" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Amortization Schedule
+        </button>
+        <button class="tab-btn" data-tab="scenario" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          Scenario Analysis
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==========================================================================
+       MAIN WORKSPACE CONTENT
+       ========================================================================== -->
+  <main class="main-workspace">
+    <div class="container">
+
+      <!-- ====================================================================
+           1. FUTURE VALUE (FV) CALCULATOR
+           ==================================================================== -->
+      <section id="panel-fv" class="calculator-panel active" role="tabpanel">
+        <div class="section-header">
+          <h2>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            Future Value (FV) Calculator
+          </h2>
+          <p>Determine the future value of a present sum of money invested today at a specific annual rate over time.</p>
+        </div>
+
+        <div class="calc-grid">
+          <!-- Input Card -->
+          <div class="card">
+            <div class="card-title">
+              Investment Inputs
+              <span class="badge">Compound Annual Growth</span>
+            </div>
+
+            <div class="preset-container">
+              <span class="preset-label">Quick Test:</span>
+              <button class="btn-chip" onclick="loadFVPreset(10000, 10, 5)">₹10k @ 10% (5 yrs)</button>
+              <button class="btn-chip" onclick="loadFVPreset(50000, 8.5, 10)">₹50k @ 8.5% (10 yrs)</button>
+            </div>
+
+            <div id="fv-alert" class="alert-box">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              <span id="fv-alert-msg"></span>
+            </div>
+
+            <form id="fv-form" onsubmit="event.preventDefault(); calculateFV();">
+              <div class="form-group">
+                <label for="fv-principal">Principal Amount (P)</label>
+                <div class="input-wrapper">
+                  <span class="input-prefix">₹</span>
+                  <input type="number" id="fv-principal" class="form-control has-prefix" placeholder="Enter principal amount" step="any" min="0" value="" required>
+                </div>
+                <div class="field-hint">Initial amount invested today</div>
+              </div>
+
+              <div class="form-group">
+                <label for="fv-rate">Annual Interest Rate (r)</label>
+                <div class="input-wrapper">
+                  <input type="number" id="fv-rate" class="form-control has-suffix" placeholder="Enter interest rate" step="any" min="0" value="" required>
+                  <span class="input-suffix">% p.a.</span>
+                </div>
+                <div class="field-hint">Expected annual rate of return</div>
+              </div>
+
+              <div class="form-group">
+                <label for="fv-time">Time Period (t)</label>
+                <div class="input-group-split">
+                  <input type="number" id="fv-time" class="form-control" placeholder="Enter time period" step="any" min="0.1" value="" required>
+                  <select id="fv-time-unit" class="form-control-unit" aria-label="Time period unit">
+                    <option value="years" selected>Years</option>
+                    <option value="months">Months</option>
+                  </select>
+                </div>
+                <div class="field-hint">Investment duration in years or months</div>
+              </div>
+
+              <div class="button-group">
+                <button type="submit" class="btn btn-primary">Calculate Future Value</button>
+                <button type="button" class="btn btn-secondary" onclick="resetFV()">Reset</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Output Card -->
+          <div class="card results-card">
+            <div class="card-title">Calculated Future Value</div>
+            
+            <div class="main-result-banner">
+              <div class="result-label">Future Value (FV)</div>
+              <div class="result-value" id="fv-result-main">₹ --</div>
+            </div>
+
+            <div class="result-metrics-grid">
+              <div class="metric-pill">
+                <div class="metric-label">Principal Amount</div>
+                <div class="metric-value" id="fv-result-principal">₹ --</div>
+              </div>
+              <div class="metric-pill">
+                <div class="metric-label">Interest Earned</div>
+                <div class="metric-value" style="color: var(--success-green);" id="fv-result-interest">₹ --</div>
+              </div>
+            </div>
+
+            <!-- SVG Visual Breakdown -->
+            <div class="chart-container">
+              <svg id="fv-chart" class="donut-chart-svg" viewBox="0 0 42 42"></svg>
+              <div class="chart-legend">
+                <div class="legend-item"><span class="legend-color" style="background: var(--accent-blue);"></span> Principal</div>
+                <div class="legend-item"><span class="legend-color" style="background: var(--success-green);"></span> Interest Earned</div>
+              </div>
+            </div>
+
+            <div class="formula-card">
+              <h4>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                Formula Used
+              </h4>
+              <div class="formula-expression">FV = P × (1 + r)^t</div>
+              <ul>
+                <li><strong>P:</strong> Principal Investment Amount</li>
+                <li><strong>r:</strong> Annual Interest Rate (decimal form: rate / 100)</li>
+                <li><strong>t:</strong> Time Period in Years</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           2. PRESENT VALUE (PV) CALCULATOR
+           ==================================================================== -->
+      <section id="panel-pv" class="calculator-panel" role="tabpanel">
+        <div class="section-header">
+          <h2>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 17H3m0 0v-8m0 8l8-8 4 4 6-6"/></svg>
+            Present Value (PV) Calculator
+          </h2>
+          <p>Calculate the current worth of a future sum of money given a specific discount rate.</p>
+        </div>
+
+        <div class="calc-grid">
+          <div class="card">
+            <div class="card-title">
+              Discounting Inputs
+              <span class="badge">Time Value Discounting</span>
+            </div>
+
+            <div class="preset-container">
+              <span class="preset-label">Quick Test:</span>
+              <button class="btn-chip" onclick="loadPVPreset(50000, 8, 5)">₹50k @ 8% (5 yrs)</button>
+              <button class="btn-chip" onclick="loadPVPreset(100000, 10, 10)">₹1 Lakh @ 10% (10 yrs)</button>
+            </div>
+
+            <div id="pv-alert" class="alert-box">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              <span id="pv-alert-msg"></span>
+            </div>
+
+            <form id="pv-form" onsubmit="event.preventDefault(); calculatePV();">
+              <div class="form-group">
+                <label for="pv-fv">Target Future Value (FV)</label>
+                <div class="input-wrapper">
+                  <span class="input-prefix">₹</span>
+                  <input type="number" id="pv-fv" class="form-control has-prefix" placeholder="Enter future value" step="any" min="0" value="" required>
+                </div>
+                <div class="field-hint">Desired future sum of money</div>
+              </div>
+
+              <div class="form-group">
+                <label for="pv-rate">Discount Rate (r)</label>
+                <div class="input-wrapper">
+                  <input type="number" id="pv-rate" class="form-control has-suffix" placeholder="Enter discount rate" step="any" min="0" value="" required>
+                  <span class="input-suffix">% p.a.</span>
+                </div>
+                <div class="field-hint">Annual discount or interest rate</div>
+              </div>
+
+              <div class="form-group">
+                <label for="pv-time">Time Period (t)</label>
+                <div class="input-group-split">
+                  <input type="number" id="pv-time" class="form-control" placeholder="Enter time period" step="any" min="0.1" value="" required>
+                  <select id="pv-time-unit" class="form-control-unit" aria-label="Time period unit">
+                    <option value="years" selected>Years</option>
+                    <option value="months">Months</option>
+                  </select>
+                </div>
+                <div class="field-hint">Duration in years or months until future value is received</div>
+              </div>
+
+              <div class="button-group">
+                <button type="submit" class="btn btn-primary">Calculate Present Value</button>
+                <button type="button" class="btn btn-secondary" onclick="resetPV()">Reset</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card results-card">
+            <div class="card-title">Calculated Present Value</div>
+
+            <div class="main-result-banner" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);">
+              <div class="result-label">Present Value (PV)</div>
+              <div class="result-value" id="pv-result-main">₹ --</div>
+            </div>
+
+            <div class="result-metrics-grid">
+              <div class="metric-pill">
+                <div class="metric-label">Target Future Value</div>
+                <div class="metric-value" id="pv-result-fv">₹ --</div>
+              </div>
+              <div class="metric-pill">
+                <div class="metric-label">Discount Amount</div>
+                <div class="metric-value" style="color: var(--accent-indigo);" id="pv-result-discount">₹ --</div>
+              </div>
+            </div>
+
+            <!-- SVG Visual Breakdown -->
+            <div class="chart-container">
+              <svg id="pv-chart" class="donut-chart-svg" viewBox="0 0 42 42"></svg>
+              <div class="chart-legend">
+                <div class="legend-item"><span class="legend-color" style="background: var(--accent-blue);"></span> Present Value</div>
+                <div class="legend-item"><span class="legend-color" style="background: var(--accent-indigo);"></span> Discount Amount</div>
+              </div>
+            </div>
+
+            <div class="formula-card">
+              <h4>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                Formula Used
+              </h4>
+              <div class="formula-expression">PV = FV / (1 + r)^t</div>
+              <ul>
+                <li><strong>FV:</strong> Target Future Value</li>
+                <li><strong>r:</strong> Discount Rate in decimal</li>
+                <li><strong>t:</strong> Time Period in Years</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           3. SIMPLE INTEREST CALCULATOR
+           ==================================================================== -->
+      <section id="panel-si" class="calculator-panel" role="tabpanel">
+        <div class="section-header">
+          <h2>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Simple Interest Calculator
+          </h2>
+          <p>Calculate interest earned on principal where interest does not compound over time.</p>
+        </div>
+
+        <div class="calc-grid">
+          <div class="card">
+            <div class="card-title">
+              Simple Interest Inputs
+              <span class="badge">Linear Growth</span>
+            </div>
+
+            <div class="preset-container">
+              <span class="preset-label">Quick Test:</span>
+              <button class="btn-chip" onclick="loadSIPreset(25000, 7.5, 3)">₹25k @ 7.5% (3 yrs)</button>
+              <button class="btn-chip" onclick="loadSIPreset(100000, 9, 5)">₹1 Lakh @ 9% (5 yrs)</button>
+            </div>
+
+            <div id="si-alert" class="alert-box">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              <span id="si-alert-msg"></span>
+            </div>
+
+            <form id="si-form" onsubmit="event.preventDefault(); calculateSI();">
+              <div class="form-group">
+                <label for="si-principal">Principal Amount (P)</label>
+                <div class="input-wrapper">
+                  <span class="input-prefix">₹</span>
+                  <input type="number" id="si-principal" class="form-control has-prefix" placeholder="Enter principal amount" step="any" min="0" value="" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="si-rate">Annual Interest Rate (r)</label>
+                <div class="input-wrapper">
+                  <input type="number" id="si-rate" class="form-control has-suffix" placeholder="Enter interest rate" step="any" min="0" value="" required>
+                  <span class="input-suffix">% p.a.</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="si-time">Time Period (t)</label>
+                <div class="input-group-split">
+                  <input type="number" id="si-time" class="form-control" placeholder="Enter time period" step="any" min="0.1" value="" required>
+                  <select id="si-time-unit" class="form-control-unit" aria-label="Time period unit">
+                    <option value="years" selected>Years</option>
+                    <option value="months">Months</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="button-group">
+                <button type="submit" class="btn btn-primary">Calculate Interest</button>
+                <button type="button" class="btn btn-secondary" onclick="resetSI()">Reset</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card results-card">
+            <div class="card-title">Simple Interest Breakdown</div>
+
+            <div class="main-result-banner">
+              <div class="result-label">Maturity Value (A)</div>
+              <div class="result-value" id="si-result-maturity">₹ --</div>
+            </div>
+
+            <div class="result-metrics-grid">
+              <div class="metric-pill">
+                <div class="metric-label">Principal Amount</div>
+                <div class="metric-value" id="si-result-principal">₹ --</div>
+              </div>
+              <div class="metric-pill">
+                <div class="metric-label">Interest Earned (SI)</div>
+                <div class="metric-value" style="color: var(--success-green);" id="si-result-interest">₹ --</div>
+              </div>
+            </div>
+
+            <div class="chart-container">
+              <svg id="si-chart" class="donut-chart-svg" viewBox="0 0 42 42"></svg>
+              <div class="chart-legend">
+                <div class="legend-item"><span class="legend-color" style="background: var(--accent-blue);"></span> Principal</div>
+                <div class="legend-item"><span class="legend-color" style="background: var(--success-green);"></span> Simple Interest</div>
+              </div>
+            </div>
+
+            <div class="formula-card">
+              <h4>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                Formulas Used
+              </h4>
+              <div class="formula-expression">SI = P × r × t</div>
+              <div class="formula-expression" style="margin-left: 0.5rem;">A = P + SI</div>
+              <ul>
+                <li><strong>SI:</strong> Simple Interest Earned</li>
+                <li><strong>P:</strong> Principal Amount | <strong>r:</strong> Rate in decimal | <strong>t:</strong> Years</li>
+                <li><strong>A:</strong> Total Maturity Value</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           4. COMPOUND INTEREST CALCULATOR
+           ==================================================================== -->
+      <section id="panel-ci" class="calculator-panel" role="tabpanel">
+        <div class="section-header">
+          <h2>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+            Compound Interest Calculator
+          </h2>
+          <p>Compute compound interest across flexible compounding frequencies (Yearly, Half-Yearly, Quarterly, Monthly, Daily).</p>
+        </div>
+
+        <div class="calc-grid">
+          <div class="card">
+            <div class="card-title">
+              Compounding Parameters
+              <span class="badge">Exponential Growth</span>
+            </div>
+
+            <div class="preset-container">
+              <span class="preset-label">Quick Test:</span>
+              <button class="btn-chip" onclick="loadCIPreset(50000, 9, 5, 12)">₹50k Monthly Compounding</button>
+              <button class="btn-chip" onclick="loadCIPreset(100000, 10, 3, 4)">₹1 Lakh Quarterly</button>
+            </div>
+
+            <div id="ci-alert" class="alert-box">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              <span id="ci-alert-msg"></span>
+            </div>
+
+            <form id="ci-form" onsubmit="event.preventDefault(); calculateCI();">
+              <div class="form-group">
+                <label for="ci-principal">Principal Amount (P)</label>
+                <div class="input-wrapper">
+                  <span class="input-prefix">₹</span>
+                  <input type="number" id="ci-principal" class="form-control has-prefix" placeholder="Enter principal amount" step="any" min="0" value="" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="ci-rate">Annual Interest Rate (r)</label>
+                <div class="input-wrapper">
+                  <input type="number" id="ci-rate" class="form-control has-suffix" placeholder="Enter interest rate" step="any" min="0" value="" required>
+                  <span class="input-suffix">% p.a.</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="ci-time">Time Period (t)</label>
+                <div class="input-group-split">
+                  <input type="number" id="ci-time" class="form-control" placeholder="Enter time period" step="any" min="0.1" value="" required>
+                  <select id="ci-time-unit" class="form-control-unit" aria-label="Time period unit">
+                    <option value="years" selected>Years</option>
+                    <option value="months">Months</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="ci-frequency">Compounding Frequency (n)</label>
+                <select id="ci-frequency" class="form-control">
+                  <option value="1" selected>Yearly (n = 1)</option>
+                  <option value="2">Half-Yearly (n = 2)</option>
+                  <option value="4">Quarterly (n = 4)</option>
+                  <option value="12">Monthly (n = 12)</option>
+                  <option value="365">Daily (n = 365)</option>
+                </select>
+              </div>
+
+              <div class="button-group">
+                <button type="submit" class="btn btn-primary">Calculate Compound Interest</button>
+                <button type="button" class="btn btn-secondary" onclick="resetCI()">Reset</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card results-card">
+            <div class="card-title">Compounded Maturity Results</div>
+
+            <div class="main-result-banner" style="background: linear-gradient(135deg, #0f172a 0%, #15803d 100%);">
+              <div class="result-label">Maturity Amount (A)</div>
+              <div class="result-value" id="ci-result-maturity">₹ --</div>
+            </div>
+
+            <div class="result-metrics-grid">
+              <div class="metric-pill">
+                <div class="metric-label">Principal Amount</div>
+                <div class="metric-value" id="ci-result-principal">₹ --</div>
+              </div>
+              <div class="metric-pill">
+                <div class="metric-label">Compound Interest (CI)</div>
+                <div class="metric-value" style="color: var(--success-green);" id="ci-result-interest">₹ --</div>
+              </div>
+            </div>
+
+            <div class="chart-container">
+              <svg id="ci-chart" class="donut-chart-svg" viewBox="0 0 42 42"></svg>
+              <div class="chart-legend">
+                <div class="legend-item"><span class="legend-color" style="background: var(--accent-blue);"></span> Principal</div>
+                <div class="legend-item"><span class="legend-color" style="background: var(--success-green);"></span> Compound Interest</div>
+              </div>
+            </div>
+
+            <div class="formula-card">
+              <h4>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                Formulas Used
+              </h4>
+              <div class="formula-expression">A = P × (1 + r / n)^(n × t)</div>
+              <div class="formula-expression" style="margin-left: 0.5rem;">CI = A - P</div>
+              <ul>
+                <li><strong>n:</strong> Compounding periods per year (Yearly:1, Half-Yearly:2, Quarterly:4, Monthly:12, Daily:365)</li>
+                <li><strong>r:</strong> Annual interest rate in decimal form</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           5. EMI CALCULATOR
+           ==================================================================== -->
+      <section id="panel-emi" class="calculator-panel" role="tabpanel">
+        <div class="section-header">
+          <h2>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Equated Monthly Installment (EMI) Calculator
+          </h2>
+          <p>Calculate your monthly installment, total interest, and total repayment amount for loans.</p>
+        </div>
+
+        <div class="calc-grid">
+          <div class="card">
+            <div class="card-title">
+              Loan Details
+              <span class="badge">Standard EMI Schedule</span>
+            </div>
+
+            <div class="preset-container">
+              <span class="preset-label">Quick Test:</span>
+              <button class="btn-chip" onclick="loadEMIPreset(500000, 10, 5)">₹5 Lakh @ 10% (5 yrs)</button>
+              <button class="btn-chip" onclick="loadEMIPreset(2500000, 8.5, 20)">Home Loan ₹25 L @ 8.5%</button>
+            </div>
+
+            <div id="emi-alert" class="alert-box">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              <span id="emi-alert-msg"></span>
+            </div>
+
+            <form id="emi-form" onsubmit="event.preventDefault(); calculateEMI();">
+              <div class="form-group">
+                <label for="emi-principal">Loan Amount (P)</label>
+                <div class="input-wrapper">
+                  <span class="input-prefix">₹</span>
+                  <input type="number" id="emi-principal" class="form-control has-prefix" placeholder="Enter loan amount" step="any" min="0" value="" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="emi-rate">Annual Interest Rate (R)</label>
+                <div class="input-wrapper">
+                  <input type="number" id="emi-rate" class="form-control has-suffix" placeholder="Enter interest rate" step="any" min="0" value="" required>
+                  <span class="input-suffix">% p.a.</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="emi-tenure">Loan Tenure (T)</label>
+                <div class="input-wrapper">
+                  <input type="number" id="emi-tenure" class="form-control has-suffix" placeholder="Enter loan tenure" step="any" min="0.1" value="" required>
+                  <span class="input-suffix">Years</span>
+                </div>
+              </div>
+
+              <div class="button-group">
+                <button type="submit" class="btn btn-primary">Calculate EMI</button>
+                <button type="button" class="btn btn-secondary" onclick="resetEMI()">Reset</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card results-card">
+            <div class="card-title">Monthly EMI Breakdown</div>
+
+            <div class="main-result-banner" style="background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%);">
+              <div class="result-label">Monthly Loan EMI</div>
+              <div class="result-value" id="emi-result-monthly">₹ --</div>
+            </div>
+
+            <div class="result-metrics-grid">
+              <div class="metric-pill">
+                <div class="metric-label">Total Principal</div>
+                <div class="metric-value" id="emi-result-principal">₹ --</div>
+              </div>
+              <div class="metric-pill">
+                <div class="metric-label">Total Interest Payable</div>
+                <div class="metric-value" style="color: var(--warning-amber);" id="emi-result-interest">₹ --</div>
+              </div>
+            </div>
+
+            <div class="metric-pill" style="margin-bottom: 1rem;">
+              <div class="metric-label">Total Payment (Principal + Interest)</div>
+              <div class="metric-value" style="font-size: 1.4rem;" id="emi-result-total">₹ --</div>
+            </div>
+
+            <div class="chart-container">
+              <svg id="emi-chart" class="donut-chart-svg" viewBox="0 0 42 42"></svg>
+              <div class="chart-legend">
+                <div class="legend-item"><span class="legend-color" style="background: var(--accent-blue);"></span> Principal Loan Amount</div>
+                <div class="legend-item"><span class="legend-color" style="background: #f59e0b;"></span> Total Interest</div>
+              </div>
+            </div>
+
+            <div class="formula-card">
+              <h4>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                Formula Used
+              </h4>
+              <div class="formula-expression">EMI = P × r × (1+r)^n / ((1+r)^n - 1)</div>
+              <ul>
+                <li><strong>P:</strong> Loan Principal Amount</li>
+                <li><strong>r:</strong> Monthly Interest Rate = Annual Rate / (12 × 100)</li>
+                <li><strong>n:</strong> Total Monthly Payments = Loan Tenure in Years × 12</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           6. LOAN AMORTIZATION SCHEDULE
+           ==================================================================== -->
+      <section id="panel-amortization" class="calculator-panel" role="tabpanel">
+        <div class="section-header">
+          <h2>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Loan Amortization Schedule
+          </h2>
+          <p>Generate a complete monthly repayment breakdown detailing opening balance, principal repaid, interest component, and closing balance.</p>
+        </div>
+
+        <div class="calc-grid full-width">
+          <div class="card">
+            <div class="card-title">
+              Amortization Parameters
+              <button class="btn btn-secondary" style="padding: 0.35rem 0.85rem; font-size: 0.8rem;" onclick="syncFromEMI()">Sync from EMI Tab</button>
+            </div>
+
+            <div id="amort-alert" class="alert-box">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              <span id="amort-alert-msg"></span>
+            </div>
+
+            <form id="amort-form" onsubmit="event.preventDefault(); generateAmortization();">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+                <div class="form-group">
+                  <label for="amort-principal">Loan Amount (₹)</label>
+                  <div class="input-wrapper">
+                    <span class="input-prefix">₹</span>
+                    <input type="number" id="amort-principal" class="form-control has-prefix" placeholder="Enter loan amount" value="" min="0" step="any" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="amort-rate">Annual Interest Rate (%)</label>
+                  <div class="input-wrapper">
+                    <input type="number" id="amort-rate" class="form-control has-suffix" placeholder="Enter interest rate" value="" min="0" step="any" required>
+                    <span class="input-suffix">% p.a.</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="amort-tenure">Loan Tenure (Years)</label>
+                  <div class="input-wrapper">
+                    <input type="number" id="amort-tenure" class="form-control has-suffix" placeholder="Enter loan tenure" value="" min="0.1" step="any" required>
+                    <span class="input-suffix">Years</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="button-group" style="max-width: 480px; margin-top: 0.5rem;">
+                <button type="submit" class="btn btn-primary">Generate Schedule</button>
+                <button type="button" class="btn btn-secondary" onclick="resetAmortization()">Reset</button>
+                <button type="button" class="btn btn-secondary" onclick="exportAmortizationCSV()">Export CSV</button>
+              </div>
+            </form>
+
+            <!-- Summary Badges -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.85rem; margin-top: 1.5rem;">
+              <div class="metric-pill">
+                <div class="metric-label">Monthly EMI</div>
+                <div class="metric-value" style="font-size: 1.1rem; color: var(--accent-blue);" id="amort-sum-emi">₹ --</div>
+              </div>
+              <div class="metric-pill">
+                <div class="metric-label">Total Payment</div>
+                <div class="metric-value" style="font-size: 1.1rem;" id="amort-sum-total">₹ --</div>
+              </div>
+              <div class="metric-pill">
+                <div class="metric-label">Total Interest</div>
+                <div class="metric-value" style="font-size: 1.1rem; color: var(--warning-amber);" id="amort-sum-interest">₹ --</div>
+              </div>
+              <div class="metric-pill">
+                <div class="metric-label">Total Payments</div>
+                <div class="metric-value" style="font-size: 1.1rem;" id="amort-sum-count">-- Months</div>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+              <table class="custom-table" id="amortization-table">
+                <thead>
+                  <tr>
+                    <th>Month</th>
+                    <th>Opening Balance (₹)</th>
+                    <th>Interest (₹)</th>
+                    <th>Principal Repaid (₹)</th>
+                    <th>EMI (₹)</th>
+                    <th>Closing Balance (₹)</th>
+                  </tr>
+                </thead>
+                <tbody id="amortization-tbody">
+                  <!-- Generated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           7. SCENARIO ANALYSIS
+           ==================================================================== -->
+      <section id="panel-scenario" class="calculator-panel" role="tabpanel">
+        <div class="section-header">
+          <h2>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+            Loan Scenario Analysis
+          </h2>
+          <p>Compare the financial impact of varying interest rates (8%, 10%, 12%, 15%) on your monthly EMI and overall interest burden.</p>
+        </div>
+
+        <div class="calc-grid full-width">
+          <div class="card">
+            <div class="card-title">
+              Comparison Controls
+              <span class="badge">Multi-Rate Sensitivity</span>
+            </div>
+
+            <div id="scenario-alert" class="alert-box">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              <span id="scenario-alert-msg"></span>
+            </div>
+
+            <form id="scenario-form" onsubmit="event.preventDefault(); calculateScenario();">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem;">
+                <div class="form-group">
+                  <label for="scenario-principal">Loan Amount (P)</label>
+                  <div class="input-wrapper">
+                    <span class="input-prefix">₹</span>
+                    <input type="number" id="scenario-principal" class="form-control has-prefix" placeholder="Enter loan amount" value="" min="0" step="any" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="scenario-tenure">Loan Tenure (T)</label>
+                  <div class="input-group-split">
+                    <input type="number" id="scenario-tenure" class="form-control" placeholder="Enter loan tenure" value="" min="0.1" step="any" required>
+                    <select id="scenario-tenure-unit" class="form-control-unit" aria-label="Tenure unit">
+                      <option value="years" selected>Years</option>
+                      <option value="months">Months</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="button-group" style="max-width: 400px;">
+                <button type="submit" class="btn btn-primary">Analyze Scenarios</button>
+                <button type="button" class="btn btn-secondary" onclick="resetScenario()">Reset</button>
+              </div>
+            </form>
+
+            <div style="margin-top: 2rem;">
+              <h3 style="font-size: 1.1rem; color: var(--primary-navy); margin-bottom: 0.75rem;">Comparative Analysis Table</h3>
+              <div class="table-responsive" style="max-height: none;">
+                <table class="custom-table" id="scenario-table">
+                  <thead>
+                    <tr>
+                      <th>Interest Rate</th>
+                      <th>Monthly EMI (₹)</th>
+                      <th>Total Payment (₹)</th>
+                      <th>Total Interest (₹)</th>
+                      <th>Interest Ratio</th>
+                    </tr>
+                  </thead>
+                  <tbody id="scenario-tbody">
+                    <tr>
+                      <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+                        Enter loan details above and click <strong>Analyze Scenarios</strong> to compare rates (8%, 10%, 12%, 15%).
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Comparative Visual Chart -->
+            <div class="scenario-chart-box">
+              <h4 style="font-size: 0.95rem; color: var(--primary-navy); font-weight: 700;">Visual Cost Breakdown across Interest Rates</h4>
+              <div class="chart-legend" style="justify-content: flex-start; margin-top: 0.5rem; margin-bottom: 1rem;">
+                <div class="legend-item"><span class="legend-color" style="background: var(--accent-blue);"></span> Principal Loan</div>
+                <div class="legend-item"><span class="legend-color" style="background: #f59e0b;"></span> Total Interest Component</div>
+              </div>
+
+              <div class="bar-chart-wrapper" id="scenario-bars-container">
+                <!-- Dynamic SVG/CSS Bars -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="app-footer">
+    <div class="container footer-content">
+      <div><strong>MIT Vishwaprayag University, Solapur</strong></div>
+      <div>BS3210: Finance for Engineers, Designers and Professionals</div>
+      <div class="footer-badge">Assignment 1 – TVM Financial Calculator Application</div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       CORE JAVASCRIPT LOGIC
+       ========================================================================== -->
+  <script>
+    /* ==========================================================================
+       UTILITY & FORMATTING FUNCTIONS
+       ========================================================================== */
+
+    /**
+     * Formats a raw number as Indian Rupee (INR) currency string.
+     * Handles 2 decimal places and standard Indian comma formatting.
+     */
+    function formatINR(val) {
+      if (isNaN(val) || !isFinite(val)) return '₹0.00';
+      return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(val);
+    }
+
+    /**
+     * Displays an inline alert message inside a calculator section.
+     */
+    function showAlert(alertId, msgId, message) {
+      const alertBox = document.getElementById(alertId);
+      const msgSpan = document.getElementById(msgId);
+      if (alertBox && msgSpan) {
+        msgSpan.textContent = message;
+        alertBox.classList.add('visible');
+      }
+    }
+
+    /**
+     * Clears an inline alert message.
+     */
+    function clearAlert(alertId) {
+      const alertBox = document.getElementById(alertId);
+      if (alertBox) {
+        alertBox.classList.remove('visible');
+      }
+    }
+
+    /**
+     * Render SVG Donut Chart for ratio visualization.
+     */
+    function renderDonutChart(svgId, val1, val2, color1 = '#2563eb', color2 = '#059669') {
+      const svg = document.getElementById(svgId);
+      if (!svg) return;
+
+      const total = val1 + val2;
+      if (total <= 0) {
+        svg.innerHTML = '';
+        return;
+      }
+
+      const p1 = (val1 / total) * 100;
+      const p2 = (val2 / total) * 100;
+
+      // SVG Circle parameters: r=15.9155 => Circumference approx 100
+      const strokeDash1 = `${p1} ${100 - p1}`;
+      const strokeDash2 = `${p2} ${100 - p2}`;
+
+      svg.innerHTML = `
+        <circle cx="21" cy="21" r="15.9155" fill="none" stroke="#f1f5f9" stroke-width="6"/>
+        <circle cx="21" cy="21" r="15.9155" fill="none" stroke="${color1}" stroke-width="6" 
+                stroke-dasharray="${strokeDash1}" stroke-dashoffset="0"/>
+        <circle cx="21" cy="21" r="15.9155" fill="none" stroke="${color2}" stroke-width="6" 
+                stroke-dasharray="${strokeDash2}" stroke-dashoffset="-${p1}"/>
+      `;
+    }
+
+    /* ==========================================================================
+       1. FUTURE VALUE (FV) LOGIC
+       ========================================================================== */
+    function calculateFV() {
+      clearAlert('fv-alert');
+      const pInput = document.getElementById('fv-principal').value.trim();
+      const rInput = document.getElementById('fv-rate').value.trim();
+      const tInput = document.getElementById('fv-time').value.trim();
+      const unit = document.getElementById('fv-time-unit') ? document.getElementById('fv-time-unit').value : 'years';
+
+      if (pInput === '' || rInput === '' || tInput === '') {
+        return showAlert('fv-alert', 'fv-alert-msg', 'Please enter all required fields.');
+      }
+
+      const P = parseFloat(pInput);
+      const rAnnual = parseFloat(rInput);
+      const rawTime = parseFloat(tInput);
+
+      if (isNaN(P) || P < 0) return showAlert('fv-alert', 'fv-alert-msg', 'Please enter a valid non-negative principal amount.');
+      if (isNaN(rAnnual) || rAnnual < 0) return showAlert('fv-alert', 'fv-alert-msg', 'Interest rate cannot be negative.');
+      if (isNaN(rawTime) || rawTime <= 0) return showAlert('fv-alert', 'fv-alert-msg', 'Time period must be greater than 0.');
+
+      const t = (unit === 'months') ? (rawTime / 12) : rawTime;
+      const r = rAnnual / 100;
+      const fv = P * Math.pow(1 + r, t);
+      const interestEarned = fv - P;
+
+      document.getElementById('fv-result-main').textContent = formatINR(fv);
+      document.getElementById('fv-result-principal').textContent = formatINR(P);
+      document.getElementById('fv-result-interest').textContent = formatINR(interestEarned);
+
+      renderDonutChart('fv-chart', P, interestEarned, '#2563eb', '#059669');
+    }
+
+    function loadFVPreset(p, r, t, unit = 'years') {
+      document.getElementById('fv-principal').value = p;
+      document.getElementById('fv-rate').value = r;
+      document.getElementById('fv-time').value = t;
+      if (document.getElementById('fv-time-unit')) document.getElementById('fv-time-unit').value = unit;
+      calculateFV();
+    }
+
+    function resetFV() {
+      document.getElementById('fv-form').reset();
+      clearAlert('fv-alert');
+      document.getElementById('fv-result-main').textContent = '₹ --';
+      document.getElementById('fv-result-principal').textContent = '₹ --';
+      document.getElementById('fv-result-interest').textContent = '₹ --';
+      const chart = document.getElementById('fv-chart');
+      if (chart) chart.innerHTML = '';
+    }
+
+    /* ==========================================================================
+       2. PRESENT VALUE (PV) LOGIC
+       ========================================================================== */
+    function calculatePV() {
+      clearAlert('pv-alert');
+      const fvInput = document.getElementById('pv-fv').value.trim();
+      const rInput = document.getElementById('pv-rate').value.trim();
+      const tInput = document.getElementById('pv-time').value.trim();
+      const unit = document.getElementById('pv-time-unit') ? document.getElementById('pv-time-unit').value : 'years';
+
+      if (fvInput === '' || rInput === '' || tInput === '') {
+        return showAlert('pv-alert', 'pv-alert-msg', 'Please enter all required fields.');
+      }
+
+      const FV = parseFloat(fvInput);
+      const rAnnual = parseFloat(rInput);
+      const rawTime = parseFloat(tInput);
+
+      if (isNaN(FV) || FV < 0) return showAlert('pv-alert', 'pv-alert-msg', 'Please enter a valid non-negative Future Value.');
+      if (isNaN(rAnnual) || rAnnual < 0) return showAlert('pv-alert', 'pv-alert-msg', 'Discount rate cannot be negative.');
+      if (isNaN(rawTime) || rawTime <= 0) return showAlert('pv-alert', 'pv-alert-msg', 'Time period must be greater than 0.');
+
+      const t = (unit === 'months') ? (rawTime / 12) : rawTime;
+      const r = rAnnual / 100;
+      const pv = FV / Math.pow(1 + r, t);
+      const discountAmount = FV - pv;
+
+      document.getElementById('pv-result-main').textContent = formatINR(pv);
+      document.getElementById('pv-result-fv').textContent = formatINR(FV);
+      document.getElementById('pv-result-discount').textContent = formatINR(discountAmount);
+
+      renderDonutChart('pv-chart', pv, discountAmount, '#2563eb', '#4f46e5');
+    }
+
+    function loadPVPreset(fv, r, t, unit = 'years') {
+      document.getElementById('pv-fv').value = fv;
+      document.getElementById('pv-rate').value = r;
+      document.getElementById('pv-time').value = t;
+      if (document.getElementById('pv-time-unit')) document.getElementById('pv-time-unit').value = unit;
+      calculatePV();
+    }
+
+    function resetPV() {
+      document.getElementById('pv-form').reset();
+      clearAlert('pv-alert');
+      document.getElementById('pv-result-main').textContent = '₹ --';
+      document.getElementById('pv-result-fv').textContent = '₹ --';
+      document.getElementById('pv-result-discount').textContent = '₹ --';
+      const chart = document.getElementById('pv-chart');
+      if (chart) chart.innerHTML = '';
+    }
+
+    /* ==========================================================================
+       3. SIMPLE INTEREST LOGIC
+       ========================================================================== */
+    function calculateSI() {
+      clearAlert('si-alert');
+      const pInput = document.getElementById('si-principal').value.trim();
+      const rInput = document.getElementById('si-rate').value.trim();
+      const tInput = document.getElementById('si-time').value.trim();
+      const unit = document.getElementById('si-time-unit') ? document.getElementById('si-time-unit').value : 'years';
+
+      if (pInput === '' || rInput === '' || tInput === '') {
+        return showAlert('si-alert', 'si-alert-msg', 'Please enter all required fields.');
+      }
+
+      const P = parseFloat(pInput);
+      const rAnnual = parseFloat(rInput);
+      const rawTime = parseFloat(tInput);
+
+      if (isNaN(P) || P < 0) return showAlert('si-alert', 'si-alert-msg', 'Please enter a valid principal amount.');
+      if (isNaN(rAnnual) || rAnnual < 0) return showAlert('si-alert', 'si-alert-msg', 'Interest rate cannot be negative.');
+      if (isNaN(rawTime) || rawTime <= 0) return showAlert('si-alert', 'si-alert-msg', 'Time period must be greater than 0.');
+
+      const t = (unit === 'months') ? (rawTime / 12) : rawTime;
+      const r = rAnnual / 100;
+      const si = P * r * t;
+      const maturity = P + si;
+
+      document.getElementById('si-result-maturity').textContent = formatINR(maturity);
+      document.getElementById('si-result-principal').textContent = formatINR(P);
+      document.getElementById('si-result-interest').textContent = formatINR(si);
+
+      renderDonutChart('si-chart', P, si, '#2563eb', '#059669');
+    }
+
+    function loadSIPreset(p, r, t, unit = 'years') {
+      document.getElementById('si-principal').value = p;
+      document.getElementById('si-rate').value = r;
+      document.getElementById('si-time').value = t;
+      if (document.getElementById('si-time-unit')) document.getElementById('si-time-unit').value = unit;
+      calculateSI();
+    }
+
+    function resetSI() {
+      document.getElementById('si-form').reset();
+      clearAlert('si-alert');
+      document.getElementById('si-result-maturity').textContent = '₹ --';
+      document.getElementById('si-result-principal').textContent = '₹ --';
+      document.getElementById('si-result-interest').textContent = '₹ --';
+      const chart = document.getElementById('si-chart');
+      if (chart) chart.innerHTML = '';
+    }
+
+    /* ==========================================================================
+       4. COMPOUND INTEREST LOGIC
+       ========================================================================== */
+    function calculateCI() {
+      clearAlert('ci-alert');
+      const pInput = document.getElementById('ci-principal').value.trim();
+      const rInput = document.getElementById('ci-rate').value.trim();
+      const tInput = document.getElementById('ci-time').value.trim();
+      const unit = document.getElementById('ci-time-unit') ? document.getElementById('ci-time-unit').value : 'years';
+      const n = parseInt(document.getElementById('ci-frequency').value, 10);
+
+      if (pInput === '' || rInput === '' || tInput === '') {
+        return showAlert('ci-alert', 'ci-alert-msg', 'Please enter all required fields.');
+      }
+
+      const P = parseFloat(pInput);
+      const rAnnual = parseFloat(rInput);
+      const rawTime = parseFloat(tInput);
+
+      if (isNaN(P) || P < 0) return showAlert('ci-alert', 'ci-alert-msg', 'Please enter a valid principal amount.');
+      if (isNaN(rAnnual) || rAnnual < 0) return showAlert('ci-alert', 'ci-alert-msg', 'Interest rate cannot be negative.');
+      if (isNaN(rawTime) || rawTime <= 0) return showAlert('ci-alert', 'ci-alert-msg', 'Time period must be greater than 0.');
+
+      const t = (unit === 'months') ? (rawTime / 12) : rawTime;
+      const r = rAnnual / 100;
+      const maturity = P * Math.pow(1 + (r / n), n * t);
+      const ci = maturity - P;
+
+      document.getElementById('ci-result-maturity').textContent = formatINR(maturity);
+      document.getElementById('ci-result-principal').textContent = formatINR(P);
+      document.getElementById('ci-result-interest').textContent = formatINR(ci);
+
+      renderDonutChart('ci-chart', P, ci, '#2563eb', '#059669');
+    }
+
+    function loadCIPreset(p, r, t, n) {
+      document.getElementById('ci-principal').value = p;
+      document.getElementById('ci-rate').value = r;
+      document.getElementById('ci-time').value = t;
+      document.getElementById('ci-frequency').value = n;
+      calculateCI();
+    }
+
+    function resetCI() {
+      document.getElementById('ci-form').reset();
+      clearAlert('ci-alert');
+      document.getElementById('ci-result-maturity').textContent = '₹ --';
+      document.getElementById('ci-result-principal').textContent = '₹ --';
+      document.getElementById('ci-result-interest').textContent = '₹ --';
+      const chart = document.getElementById('ci-chart');
+      if (chart) chart.innerHTML = '';
+    }
+
+    /* ==========================================================================
+       5. EMI CALCULATOR LOGIC
+       ========================================================================== */
+    function calculateEMI() {
+      clearAlert('emi-alert');
+      const pInput = document.getElementById('emi-principal').value.trim();
+      const rInput = document.getElementById('emi-rate').value.trim();
+      const tInput = document.getElementById('emi-tenure').value.trim();
+
+      if (pInput === '' || rInput === '' || tInput === '') {
+        return showAlert('emi-alert', 'emi-alert-msg', 'Please enter all required fields.');
+      }
+
+      const P = parseFloat(pInput);
+      const R = parseFloat(rInput);
+      const T = parseFloat(tInput);
+
+      if (isNaN(P) || P < 0) return showAlert('emi-alert', 'emi-alert-msg', 'Please enter a valid loan amount.');
+      if (isNaN(R) || R < 0) return showAlert('emi-alert', 'emi-alert-msg', 'Interest rate cannot be negative.');
+      if (isNaN(T) || T <= 0) return showAlert('emi-alert', 'emi-alert-msg', 'Loan tenure must be greater than 0.');
+
+      const n = Math.round(T * 12);
+      let emi = 0;
+
+      if (R === 0) {
+        emi = P / n;
+      } else {
+        const r = R / (12 * 100);
+        const factor = Math.pow(1 + r, n);
+        emi = (P * r * factor) / (factor - 1);
+      }
+
+      const totalPayment = emi * n;
+      const totalInterest = totalPayment - P;
+
+      document.getElementById('emi-result-monthly').textContent = formatINR(emi);
+      document.getElementById('emi-result-principal').textContent = formatINR(P);
+      document.getElementById('emi-result-interest').textContent = formatINR(totalInterest);
+      document.getElementById('emi-result-total').textContent = formatINR(totalPayment);
+
+      renderDonutChart('emi-chart', P, totalInterest, '#2563eb', '#f59e0b');
+    }
+
+    function loadEMIPreset(p, r, t) {
+      document.getElementById('emi-principal').value = p;
+      document.getElementById('emi-rate').value = r;
+      document.getElementById('emi-tenure').value = t;
+      calculateEMI();
+    }
+
+    function resetEMI() {
+      document.getElementById('emi-form').reset();
+      clearAlert('emi-alert');
+      document.getElementById('emi-result-monthly').textContent = '₹ --';
+      document.getElementById('emi-result-principal').textContent = '₹ --';
+      document.getElementById('emi-result-interest').textContent = '₹ --';
+      document.getElementById('emi-result-total').textContent = '₹ --';
+      const chart = document.getElementById('emi-chart');
+      if (chart) chart.innerHTML = '';
+    }
+
+    /* ==========================================================================
+       6. AMORTIZATION SCHEDULE LOGIC
+       ========================================================================== */
+    let currentAmortData = [];
+
+    function generateAmortization() {
+      clearAlert('amort-alert');
+      const pInput = document.getElementById('amort-principal').value.trim();
+      const rInput = document.getElementById('amort-rate').value.trim();
+      const tInput = document.getElementById('amort-tenure').value.trim();
+
+      if (pInput === '' || rInput === '' || tInput === '') {
+        return showAlert('amort-alert', 'amort-alert-msg', 'Please enter all required fields.');
+      }
+
+      const P = parseFloat(pInput);
+      const R = parseFloat(rInput);
+      const T = parseFloat(tInput);
+
+      if (isNaN(P) || P < 0) return showAlert('amort-alert', 'amort-alert-msg', 'Please enter a valid loan amount.');
+      if (isNaN(R) || R < 0) return showAlert('amort-alert', 'amort-alert-msg', 'Interest rate cannot be negative.');
+      if (isNaN(T) || T <= 0) return showAlert('amort-alert', 'amort-alert-msg', 'Loan tenure must be greater than 0.');
+
+      const totalMonths = Math.round(T * 12);
+      const monthlyRate = R / (12 * 100);
+
+      let emi = 0;
+      if (R === 0) {
+        emi = P / totalMonths;
+      } else {
+        const factor = Math.pow(1 + monthlyRate, totalMonths);
+        emi = (P * monthlyRate * factor) / (factor - 1);
+      }
+
+      let openingBal = P;
+      let totalInterestAccrued = 0;
+      currentAmortData = [];
+
+      const tbody = document.getElementById('amortization-tbody');
+      tbody.innerHTML = '';
+
+      for (let m = 1; m <= totalMonths; m++) {
+        let interestPayment = openingBal * monthlyRate;
+        let principalPayment = emi - interestPayment;
+        let closingBal = openingBal - principalPayment;
+
+        if (m === totalMonths || closingBal < 0) {
+          principalPayment = openingBal;
+          closingBal = 0;
+          emi = principalPayment + interestPayment;
+        }
+
+        totalInterestAccrued += interestPayment;
+
+        currentAmortData.push({
+          month: m,
+          opening: openingBal,
+          interest: interestPayment,
+          principal: principalPayment,
+          emi: emi,
+          closing: closingBal
+        });
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="font-mono">Month ${m}</td>
+          <td>${formatINR(openingBal)}</td>
+          <td style="color: var(--warning-amber);">${formatINR(interestPayment)}</td>
+          <td style="color: var(--accent-blue);">${formatINR(principalPayment)}</td>
+          <td class="font-mono">${formatINR(emi)}</td>
+          <td>${formatINR(closingBal)}</td>
+        `;
+        tbody.appendChild(tr);
+
+        openingBal = closingBal;
+      }
+
+      const grandTotal = P + totalInterestAccrued;
+      document.getElementById('amort-sum-emi').textContent = formatINR(emi);
+      document.getElementById('amort-sum-total').textContent = formatINR(grandTotal);
+      document.getElementById('amort-sum-interest').textContent = formatINR(totalInterestAccrued);
+      document.getElementById('amort-sum-count').textContent = `${totalMonths} Months`;
+    }
+
+    function resetAmortization() {
+      document.getElementById('amort-form').reset();
+      clearAlert('amort-alert');
+      currentAmortData = [];
+      document.getElementById('amortization-tbody').innerHTML = '';
+      document.getElementById('amort-sum-emi').textContent = '₹ --';
+      document.getElementById('amort-sum-total').textContent = '₹ --';
+      document.getElementById('amort-sum-interest').textContent = '₹ --';
+      document.getElementById('amort-sum-count').textContent = '-- Months';
+    }
+
+    function syncFromEMI() {
+      const pVal = document.getElementById('emi-principal').value.trim();
+      const rVal = document.getElementById('emi-rate').value.trim();
+      const tVal = document.getElementById('emi-tenure').value.trim();
+
+      if (pVal === '' || rVal === '' || tVal === '') {
+        return showAlert('amort-alert', 'amort-alert-msg', 'EMI tab fields are blank. Please enter loan details in EMI tab first.');
+      }
+
+      document.getElementById('amort-principal').value = pVal;
+      document.getElementById('amort-rate').value = rVal;
+      document.getElementById('amort-tenure').value = tVal;
+      generateAmortization();
+    }
+
+    function exportAmortizationCSV() {
+      if (!currentAmortData || currentAmortData.length === 0) {
+        alert('Please generate the schedule first before exporting.');
+        return;
+      }
+
+      let csv = 'Month,Opening Balance (INR),Interest (INR),Principal Repaid (INR),EMI (INR),Closing Balance (INR)\n';
+      currentAmortData.forEach(row => {
+        csv += `${row.month},${row.opening.toFixed(2)},${row.interest.toFixed(2)},${row.principal.toFixed(2)},${row.emi.toFixed(2)},${row.closing.toFixed(2)}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.setAttribute('href', url);
+      a.setAttribute('download', 'Loan_Amortization_Schedule.csv');
+      a.click();
+    }
+
+    /* ==========================================================================
+       7. SCENARIO ANALYSIS LOGIC
+       ========================================================================== */
+    function calculateScenario() {
+      clearAlert('scenario-alert');
+      const pInput = document.getElementById('scenario-principal').value.trim();
+      const tInput = document.getElementById('scenario-tenure').value.trim();
+      const unit = document.getElementById('scenario-tenure-unit') ? document.getElementById('scenario-tenure-unit').value : 'years';
+
+      if (pInput === '' || tInput === '') {
+        return showAlert('scenario-alert', 'scenario-alert-msg', 'Please enter all required fields.');
+      }
+
+      const P = parseFloat(pInput);
+      const rawTime = parseFloat(tInput);
+
+      if (isNaN(P) || P < 0) return showAlert('scenario-alert', 'scenario-alert-msg', 'Please enter a valid loan amount.');
+      if (isNaN(rawTime) || rawTime <= 0) return showAlert('scenario-alert', 'scenario-alert-msg', 'Loan tenure must be greater than 0.');
+
+      const T = (unit === 'months') ? (rawTime / 12) : rawTime;
+      const rates = [8, 10, 12, 15];
+      const totalMonths = Math.round(T * 12);
+      const tbody = document.getElementById('scenario-tbody');
+      const barsContainer = document.getElementById('scenario-bars-container');
+
+      tbody.innerHTML = '';
+      barsContainer.innerHTML = '';
+
+      let maxTotalPayment = 0;
+      const scenarioResults = [];
+
+      rates.forEach(rate => {
+        const r = rate / (12 * 100);
+        const factor = Math.pow(1 + r, totalMonths);
+        const emi = (P * r * factor) / (factor - 1);
+        const totalPayment = emi * totalMonths;
+        const totalInterest = totalPayment - P;
+        const interestRatio = ((totalInterest / P) * 100).toFixed(1);
+
+        if (totalPayment > maxTotalPayment) maxTotalPayment = totalPayment;
+
+        scenarioResults.push({ rate, emi, totalPayment, totalInterest, interestRatio });
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong style="color: var(--accent-blue);">${rate}% p.a.</strong></td>
+          <td class="font-mono">${formatINR(emi)}</td>
+          <td class="font-mono">${formatINR(totalPayment)}</td>
+          <td class="font-mono" style="color: var(--warning-amber);">${formatINR(totalInterest)}</td>
+          <td><span class="badge" style="background: #fef3c7; color: #b45309;">${interestRatio}% of Principal</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      scenarioResults.forEach(sc => {
+        const principalPct = (P / sc.totalPayment) * 100;
+        const interestPct = (sc.totalInterest / sc.totalPayment) * 100;
+
+        const row = document.createElement('div');
+        row.className = 'scenario-bar-row';
+        row.innerHTML = `
+          <div class="scenario-label">${sc.rate}% Rate</div>
+          <div class="scenario-track" title="${sc.rate}% - Principal: ${formatINR(P)}, Interest: ${formatINR(sc.totalInterest)}">
+            <div class="bar-fill-principal" style="width: ${principalPct}%;"></div>
+            <div class="bar-fill-interest" style="width: ${interestPct}%;"></div>
+          </div>
+          <div class="scenario-value-text">
+            Total: ${formatINR(sc.totalPayment)}
+          </div>
+        `;
+        barsContainer.appendChild(row);
+      });
+    }
+
+    function resetScenario() {
+      document.getElementById('scenario-form').reset();
+      clearAlert('scenario-alert');
+      document.getElementById('scenario-tbody').innerHTML = `
+        <tr>
+          <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+            Enter loan details above and click <strong>Analyze Scenarios</strong> to compare rates (8%, 10%, 12%, 15%).
+          </td>
+        </tr>
+      `;
+      document.getElementById('scenario-bars-container').innerHTML = '';
+    }
+
+    /* ==========================================================================
+       TAB SWITCHING NAVIGATION LOGIC
+       ========================================================================== */
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabButtons = document.querySelectorAll('#tvmTabList .tab-btn');
+      const panels = document.querySelectorAll('.calculator-panel');
+
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tabId = btn.getAttribute('data-tab');
+
+          // Deactivate all tabs
+          tabButtons.forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+
+          // Hide all panels
+          panels.forEach(p => p.classList.remove('active'));
+
+          // Activate selected
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+          const activePanel = document.getElementById(`panel-${tabId}`);
+          if (activePanel) {
+            activePanel.classList.add('active');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
